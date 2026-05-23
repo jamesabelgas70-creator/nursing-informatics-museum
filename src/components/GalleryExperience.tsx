@@ -1260,7 +1260,9 @@ function MuseumScene({
   
   // Calculate pioneer position if focused
   const focusedPioneer = pioneerFocus ? pioneers.find(p => p.id === pioneerFocus.pioneerId) : null;
-  const pioneerIndex = focusedPioneer ? pioneers.findIndex(p => p.id === pioneerFocus.pioneerId) : 0;
+  const pioneerIndex = pioneerFocus && focusedPioneer
+  ? pioneers.findIndex(p => p.id === pioneerFocus.pioneerId)
+  : 0;
   const pioneerX = -3.08 + pioneerIndex * 1.54;
   
   const cameraTarget: [number, number, number] = pioneerFocus

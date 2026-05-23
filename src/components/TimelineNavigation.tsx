@@ -10,38 +10,30 @@ export default function TimelineNavigation() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        // Find the entry with the highest intersection ratio
-        let maxRatio = 0;
-        let activeEntry = null;
+  const sections = document.querySelectorAll("[data-decade]");
 
-        entries.forEach((entry) => {
-          if (entry.intersectionRatio > maxRatio) {
-            maxRatio = entry.intersectionRatio;
-            activeEntry = entry;
-          }
-        });
+  const observer = new IntersectionObserver(
+    (entries: IntersectionObserverEntry[]) => {
+      const activeEntry = entries.find(
+        (entry: IntersectionObserverEntry) => entry.isIntersecting
+      );
 
-        // Update active state if we found an intersecting entry
-        if (activeEntry && activeEntry.isIntersecting) {
-          const decade = activeEntry.target.getAttribute("data-decade");
-          if (decade) {
-            setActive(decade);
-          }
+      if (activeEntry) {
+        const decade = activeEntry.target.getAttribute("data-decade");
+        if (decade) {
+          setActive(decade);
         }
-      },
-      { 
-        rootMargin: "-20% 0px -20% 0px", 
-        threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
       }
-    );
+    },
+    {
+      threshold: 0.5,
+    }
+  );
 
-    const sections = document.querySelectorAll("[data-decade]");
-    sections.forEach((section) => observer.observe(section));
-    
-    return () => observer.disconnect();
-  }, []);
+  sections.forEach((section) => observer.observe(section));
+
+  return () => observer.disconnect();
+}, []);
 
   useEffect(() => {
     const updateVisibility = () => {
